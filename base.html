@@ -21,12 +21,6 @@
       <tr>
         <td>{{todo.task_id}}</td>
         <td>{{todo.name}}</td>
-        {%if todo.done==False%}
-        <td>Em processo</td>
-        {%else%}
-        <td>Concluído</td>
-        {%endif%}
-        <td><a href="/update/{{todo.task_id}}">Atualizar</a></td>
         <td><a class="button open-button" data-id="{{ todo.task_id }}" data-name="{{ todo.name }}">Editar</a></td>
         <td><a href="/delete/{{todo.task_id}}">Deletar</a></td>
       </tr>
@@ -37,12 +31,15 @@
 <dialog class="modal" id="modal">
   <h2>Alterar</h2>
 
-<form id="edit-form" action="/edit/{{ todo.task_id }}" method="POST">
+<form id="edit-form" action="/edit" method="PUT">
+ <input type="hidden" name="todo_id" id="todo-id">
  <label>Digite sua tarefa:</label>
  <input type="text" name="name" id="todo-name">
  <button class="close-button">Fechar</button>
  <button type="submit">Salvar</button>
 </form>
+
+
 
 
 
@@ -60,9 +57,12 @@ openModalButtons.forEach(button => {
  const todoId = button.getAttribute("data-id");
  const todoName = button.getAttribute("data-name");
  todoNameInput.value = todoName;
+ editForm.setAttribute("data-id", todoId);
+ document.getElementById("todo-id").value = todoId;
  modal.showModal();
  });
 });
+
 
 closeModalButton.addEventListener("click", () => {
  modal.close();
