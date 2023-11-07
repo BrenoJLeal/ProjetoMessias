@@ -27,38 +27,58 @@
         <td>Concluído</td>
         {%endif%}
         <td><a href="/update/{{todo.task_id}}">Atualizar</a></td>
-        <td><a  class="button open-button">Editar</a></td>
+        <td><a class="button open-button" data-id="{{ todo.task_id }}" data-name="{{ todo.name }}">Editar</a></td>
         <td><a href="/delete/{{todo.task_id}}">Deletar</a></td>
       </tr>
 
       {%endfor%}
-
       </tbody>
     </table>
 <dialog class="modal" id="modal">
   <h2>Alterar</h2>
 
-  <form action="/edit/{{ todo.task_id }}" method="POST">
-    <label>Digite sua tarefa:</label>
-    <input type="text" name="todo_id" value="{{ todo.task_id }}">
-    <button class="close-button">Fechar</button>
-    <button type="submit">Salvar</button>
-  </form>
+<form id="edit-form" action="/edit/{{ todo.task_id }}" method="POST">
+ <label>Digite sua tarefa:</label>
+ <input type="text" name="name" id="todo-name">
+ <button class="close-button">Fechar</button>
+ <button type="submit">Salvar</button>
+</form>
+
+
 
 </dialog>
 
     <script>
 const modal = document.querySelector("#modal");
-const openModal = document.querySelector(".open-button");
-const closeModal = document.querySelector(".close-button");
+const openModalButtons = document.querySelectorAll(".open-button");
+const closeModalButton = document.querySelector(".close-button");
+const editForm = document.querySelector("#edit-form");
+const todoNameInput = document.querySelector("#todo-name");
 
-openModal.addEventListener("click", () => {
-  modal.showModal();
+openModalButtons.forEach(button => {
+ button.addEventListener("click", () => {
+ const todoId = button.getAttribute("data-id");
+ const todoName = button.getAttribute("data-name");
+ todoNameInput.value = todoName;
+ modal.showModal();
+ });
 });
 
-closeModal.addEventListener("click", () => {
-  modal.close();
+closeModalButton.addEventListener("click", () => {
+ modal.close();
 });
+
+editForm.addEventListener("submit", (event) => {
+ event.preventDefault();
+ const todoId = editForm.getAttribute("data-id");
+ const newTodoName = todoNameInput.value;
+ const todoItem = document.querySelector(`a[data-id="${todoId}"]`).parentElement.parentElement;
+ todoItem.children[1].textContent = newTodoName;
+ modal.close();
+});
+
+
+
 
     </script>
   </div>
