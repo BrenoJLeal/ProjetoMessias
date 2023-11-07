@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>App Lista de Tarefas</title>
+
+</head>
+<body>
+  <div>
+    <h1>Lista de tarefas</h1>
+    <form action="/add" method="post">
+      <div>
+        <label>Adicione uma tarefa</label>
+        <input type="text" name="name">
+        <button type="submit">Adicionar</button>
+      </div>
+    </form>
+    <table>
+      <tbody>
+      {% for todo in todo_list%}
+      <tr>
+        <td>{{todo.task_id}}</td>
+        <td>{{todo.name}}</td>
+        {%if todo.done==False%}
+        <td>Em processo</td>
+        {%else%}
+        <td>Concluído</td>
+        {%endif%}
+        <td><a href="/update/{{todo.task_id}}">Atualizar</a></td>
+        <td><a  class="button open-button">Editar</a></td>
+        <td><a href="/delete/{{todo.task_id}}">Deletar</a></td>
+      </tr>
+
+      {%endfor%}
+
+      </tbody>
+    </table>
+<dialog class="modal" id="modal">
+  <h2>Alterar</h2>
+
+  <form action="/edit/{{ todo.task_id }}" method="POST">
+    <label>Digite sua tarefa:</label>
+    <input type="text" name="todo_id" value="{{ todo.task_id }}">
+    <button class="close-button">Fechar</button>
+    <button type="submit">Salvar</button>
+  </form>
+
+</dialog>
+
+    <script>
+const modal = document.querySelector("#modal");
+const openModal = document.querySelector(".open-button");
+const closeModal = document.querySelector(".close-button");
+
+openModal.addEventListener("click", () => {
+  modal.showModal();
+});
+
+closeModal.addEventListener("click", () => {
+  modal.close();
+});
+
+    </script>
+  </div>
+</body>
+</html>
