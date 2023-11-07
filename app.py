@@ -33,19 +33,12 @@ def add():
     db.session.commit()
     return redirect(url_for("home"))
 
-@app.route('/update/<int:todo_id>')
-def update(todo_id):
-    todo=Todo.query.get(todo_id)
-    todo.done=not todo.done
-    db.session.commit()
+@app.route('/edit', methods=['PUT'])
+def edit():
+    todo_id = request.form.get('todo_id')
+    new_name = request.form.get('name')
+    edit_todo(todo_id, new_name)
     return redirect(url_for("home"))
-@app.route('/edit/<int:todo_id>', methods=['POST'])
-def edit(todo_id):
- new_name = request.form.get('name')
- edit_todo(todo_id, new_name)
- return redirect(url_for("home"))
-
-
 def edit_todo(todo_id, new_name):
   todo = Todo.query.get(todo_id)
   todo.name = new_name
