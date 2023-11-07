@@ -14,36 +14,39 @@ class Todo(db.Model):
     name=db.Column(db.String(100))
     done=db.Column(db.Boolean)
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def home():
    todo_list = Todo.query.all()
    todo = None
-   if request.method == "GET":
+   if request.method == "POST":
+       name=request.form.get("name")
+       new_task=Todo(name=name, done=False)
+       db.session.add(new_task)
+       db.session.commit()
+       return redirect(url_for("home"))
+   else:
        todo_id = request.args.get("todo_id")
        todo = Todo.query.get(todo_id) if todo_id else None
-   return render_template("base.html", todo_list=todo_list, todo=todo)
+       return render_template("base.html", todo_list=todo_list, todo=todo)
 
 
-
-@app.route('/add',methods=['POST'])
-def add():
-    name=request.form.get("name")
-    new_task=Todo(name=name, done=False)
-    db.session.add(new_task)
-    db.session.commit()
-    return redirect(url_for("home"))
-
-@app.route('/edit', methods=['PUT'])
+@app.route('/edit', methods=['POST'])
 def edit():
-    todo_id = request.form.get('todo_id')
-    new_name = request.form.get('name')
-    edit_todo(todo_id, new_name)
+    data = request.get_json()
+    todo_id = data.get('todo_id')
+    new_name = data.get('name')
+    new_task_id = data.get('task_id')
+    edit_todo(todo_id, new_name, new_task_id)
     return redirect(url_for("home"))
-def edit_todo(todo_id, new_name):
+
+
+def edit_todo(todo_id, new_name, new_task_id):
   todo = Todo.query.get(todo_id)
   todo.name = new_name
+  todo.task_id = new_task_id
   db.session.commit()
   return redirect(url_for("home"))
+
 
 @app.route('/delete/<int:todo_id>')
 def delete(todo_id):

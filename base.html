@@ -8,7 +8,7 @@
 <body>
   <div>
     <h1>Lista de tarefas</h1>
-    <form action="/add" method="post">
+    <form action="/" method="post">
       <div>
         <label>Adicione uma tarefa</label>
         <input type="text" name="name">
@@ -35,9 +35,12 @@
  <input type="hidden" name="todo_id" id="todo-id">
  <label>Digite sua tarefa:</label>
  <input type="text" name="name" id="todo-name">
+ <label>Digite o ID da tarefa:</label>
+ <input type="text" name="task_id" id="todo-task-id">
  <button class="close-button">Fechar</button>
  <button type="submit">Salvar</button>
 </form>
+
 
 
 
@@ -57,11 +60,13 @@ openModalButtons.forEach(button => {
  const todoId = button.getAttribute("data-id");
  const todoName = button.getAttribute("data-name");
  todoNameInput.value = todoName;
+ document.getElementById("todo-task-id").value = todoId;
  editForm.setAttribute("data-id", todoId);
  document.getElementById("todo-id").value = todoId;
  modal.showModal();
  });
 });
+
 
 
 closeModalButton.addEventListener("click", () => {
