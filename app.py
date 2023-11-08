@@ -1,10 +1,7 @@
 from flask import Flask,render_template, request,redirect,url_for,jsonify
 from flask_sqlalchemy import SQLAlchemy
 
-
-
 app = Flask(__name__)
-
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
@@ -16,7 +13,6 @@ class Todo(db.Model):
 
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -33,8 +29,6 @@ def home():
        todo = Todo.query.get(todo_id) if todo_id else None
        return render_template("base.html", todo_list=todo_list, todo=todo)
 
-
-
 @app.route('/edit', methods=['PUT'])
 def edit():
    data = request.get_json()
@@ -44,10 +38,6 @@ def edit():
    todo = edit_todo(todo_id, new_name, new_task_id)
    return jsonify(todo.to_dict()), 200
 
-
-
-
-
 def edit_todo(todo_id, new_name, new_task_id):
   todo = Todo.query.get(todo_id)
   todo.name = new_name
@@ -55,14 +45,13 @@ def edit_todo(todo_id, new_name, new_task_id):
   db.session.commit()
   return todo
 
-
-
 @app.route('/delete/<int:todo_id>')
 def delete(todo_id):
     todo=Todo.query.get(todo_id)
     db.session.delete(todo)
     db.session.commit()
     return redirect(url_for("home"))
+
 if __name__ == '__main__':
     app.run(debug=True)
 
