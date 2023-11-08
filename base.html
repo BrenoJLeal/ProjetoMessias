@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>App Lista de Tarefas</title>
@@ -38,14 +38,8 @@
  <button class="close-button">Fechar</button>
  <button type="submit">Salvar</button>
 </form>
-
-
-
-
-
 </dialog>
-
-    <script>
+      <script>
 const modal = document.querySelector("#modal");
 const openModalButtons = document.querySelectorAll(".open-button");
 const closeModalButton = document.querySelector(".close-button");
@@ -53,36 +47,35 @@ const editForm = document.querySelector("#edit-form");
 const todoNameInput = document.querySelector("#todo-name");
 
 openModalButtons.forEach(button => {
- button.addEventListener("click", () => {
- const todoId = button.getAttribute("data-id");
- const todoName = button.getAttribute("data-name");
- todoNameInput.value = todoName;
- editForm.setAttribute("data-id", todoId);
- document.getElementById("todo-id").value = todoId;
- modal.showModal();
- });
+    button.addEventListener("click", () => {
+    const todoId = button.getAttribute("data-id");
+    const todoName = button.getAttribute("data-name");
+    todoNameInput.value = todoName;
+    editForm.setAttribute("data-id", todoId);
+    document.getElementById("todo-id").value = todoId;
+    modal.showModal();
+    });
 });
 
-
 closeModalButton.addEventListener("click", () => {
- modal.close();
+    modal.close();
 });
 
 editForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const todoId = editForm.getAttribute("data-id");
-  const newTodoName = todoNameInput.value;
-  fetch(`/edit`, {
-      method: 'PUT',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-          todo_id: todoId,
-          name: newTodoName,
-          task_id: todoId,
-      }),
-  })
+    event.preventDefault();
+    const todoId = editForm.getAttribute("data-id");
+    const newTodoName = todoNameInput.value;
+    fetch(`/edit`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            todo_id: todoId,
+            name: newTodoName,
+            task_id: todoId,
+        }),
+    })
   .then(response => response.json())
   .then(data => {
       const todoItem = document.querySelector(`a[data-id="${todoId}"]`).parentElement.parentElement;
@@ -91,8 +84,6 @@ editForm.addEventListener("submit", (event) => {
       modal.close();
   });
 });
-
-
     </script>
   </div>
 </body>
