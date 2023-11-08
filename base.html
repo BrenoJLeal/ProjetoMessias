@@ -21,7 +21,7 @@
       <tr>
         <td>{{todo.task_id}}</td>
         <td>{{todo.name}}</td>
-        <td><a class="button open-button" data-id="{{ todo.task_id }}" data-name="{{ todo.name }}">Editar</a></td>
+        <td><a class="button open-button" data-id="{{ todo.task_id }}" >Editar</a></td>
         <td><a href="/delete/{{todo.task_id}}">Deletar</a></td>
       </tr>
 
@@ -35,12 +35,9 @@
  <input type="hidden" name="todo_id" id="todo-id">
  <label>Digite sua tarefa:</label>
  <input type="text" name="name" id="todo-name">
- <label>Digite o ID da tarefa:</label>
- <input type="text" name="task_id" id="todo-task-id">
  <button class="close-button">Fechar</button>
  <button type="submit">Salvar</button>
 </form>
-
 
 
 
@@ -60,7 +57,6 @@ openModalButtons.forEach(button => {
  const todoId = button.getAttribute("data-id");
  const todoName = button.getAttribute("data-name");
  todoNameInput.value = todoName;
- document.getElementById("todo-task-id").value = todoId;
  editForm.setAttribute("data-id", todoId);
  document.getElementById("todo-id").value = todoId;
  modal.showModal();
@@ -68,21 +64,33 @@ openModalButtons.forEach(button => {
 });
 
 
-
 closeModalButton.addEventListener("click", () => {
  modal.close();
 });
 
 editForm.addEventListener("submit", (event) => {
- event.preventDefault();
- const todoId = editForm.getAttribute("data-id");
- const newTodoName = todoNameInput.value;
- const todoItem = document.querySelector(`a[data-id="${todoId}"]`).parentElement.parentElement;
- todoItem.children[1].textContent = newTodoName;
- modal.close();
+  event.preventDefault();
+  const todoId = editForm.getAttribute("data-id");
+  const newTodoName = todoNameInput.value;
+  fetch(`/edit`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          todo_id: todoId,
+          name: newTodoName,
+          task_id: todoId,
+      }),
+  })
+  .then(response => response.json())
+  .then(data => {
+      const todoItem = document.querySelector(`a[data-id="${todoId}"]`).parentElement.parentElement;
+      todoItem.children[1].textContent = data.name;
+      todoItem.children[0].textContent = data.task_id;
+      modal.close();
+  });
 });
-
-
 
 
     </script>
